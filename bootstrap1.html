@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Turing Chat</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style>
+
+  @media screen and (min-width: 1024px) {
+   #d1{
+     
+    height:440px;
+      }
+}      
+
+@media screen and (max-width: 800px) {
+#d1{
+    height:300px;
+   }
+}
+
+    @media screen and (max-width: 600px) {
+    #d1{
+        height:250px;
+       }
+}
+
+   
+
+    .col-1 {
+        background-color: #f4511e;
+        overflow: scroll;
+       
+    }
+
+    .col-2 {
+        background-color: #87CEFA;
+        overflow: scroll;
+    }
+        .row {
+        background-color: #F0F8FF;
+        padding: 5px 25px;
+    }
+
+        
+ 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+
+
+
+</style>
+
+<body>
+
+    
+    <div id="d1" class="col-1" style="overflow: scroll">
+        
+    </div>    
+    <div id="d1" class="col-2">
+    </div>
+    <form id="humanForm">
+    <div class="row">
+            <div class="col-sm-11" style="background-color: f4511e">
+                <input id="m" type="text" class="form-control"  placeholder="Napisz wiadomość" required>
+            </div>
+        <div class="col-sm-1" style="background-color: f4511e">
+            <button type="button"class="btn btn-danger btn-large" style="float: right">Send to human</button>
+        </div>
+    </div>
+    </form>
+    <form id="bootForm">
+    <div class="row">
+        <div class="col-sm-11" style="background-color: f4511e">
+            <input id="b" type="text" class="form-control"  placeholder="Napisz wiadomość" required>
+        </div>
+        <div class="col-sm-1" style="background-color: f4511e">
+            <button type="button"class="btn btn-danger" style="float: right">Send to roboot</button>
+        </div>
+    </div>
+    </form>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+     <script>
+      var socket = io();
+
+      $("#humanForm").submit(function(){
+        var whitespacePattern = /^\s*$/;
+        var buttonHuman = $('#m').val();
+
+                var finito = $('#m').val();
+                   if(finito.toLowerCase() == 'koniec')
+                   {
+                     var answer =  prompt('Zakonczyles wlasnie czat. Jak myslisz rozmawiales z człowiekiem czy serwerem?');
+                     socket.emit('clientAnswer', answer);
+                     $('#m').val('');
+        
+                    return false;
+
+                   }
+
+                   socket.emit('mssage', $('#m').val());
+                   $('#m').val('');
+                   return false;
+
+   });
+
+   $("#bootForm").submit(function(){
+      
+        var whitespacePattern = /^\s*$/;
+        var buttonBoot = $('#b').val();
+
+                   if(buttonBoot.toLowerCase() === 'koniec')
+                   {
+                     var answer =  prompt('Zakonczyles wlasnie czat. Jak myslisz rozmawiales z człowiekiem czy serwerem?');
+                     socket.emit('clientAnswer', answer);
+                     $('#b').val('');
+        
+                    return false;
+                }
+
+      
+            socket.emit('emitToBoot', $('#b').val());
+            $('#b').val('');
+
+            return false;
+     
+   });
+
+        //     socket.on('output', function(data){
+        //     var dataLength = data.length;
+        //     //zwraca losowy wiersz pomiedzy 1, a dlugoscia tablicy
+        //    var randomNumber = Math.floor((Math.random() * dataLength) + 1); 
+        //         $('#messages').append($('.td2').text(data[randomNumber].message));
+        //         return false;
+        // });      
+
+      socket.on('mssage', function(msg){
+        
+        $('.col-1').append('<p></p>').scroll();
+        $('.col-1').append(msg).offset().top-10;  
+     //   $(".col-1").offset().top - 10;    
+      });
+
+      socket.on('emitToBoot', function(data){
+        $('.col-2').append('<br></br>').scrollTop();
+        $('.col-2').append(data).scroll().scrollTop();
+      });
+
+      socket.on('responseBoot', function(response){
+        $('.col-2').append('<br></br>').scrollTop();
+        $('.col-2').append(response).scroll().scrollTop();
+      });
+
+     socket.on('er', function(er){
+     alert(er);
+      })
+
+  
+    </script>
+</body>
+</html>
