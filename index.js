@@ -7,7 +7,7 @@ var cleverbot = require("cleverbot.io"),
 bot = new cleverbot("iCVb1TCrc3baEnNa", "RLlhCsPMLZFkBPz64S74jUHiFyLcVt3c");
 
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/bootstrap1.html');
+  res.sendFile(__dirname + '/index.html');
 });
 
 mongoose.connect('mongodb://127.0.0.1/test');
